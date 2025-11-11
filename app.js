@@ -1,6 +1,11 @@
 import express from "express"; // express 모듈 가져오기
+import authRouter from "./routes/auth.router.js";
+import usersRouter from "./routes/users.router.js";
+import { eduTest } from "./app/middlewares/edu/edu.middleware.js";
 
 const app = express(); // express {} 반환
+app.use(express.json()); // JSON으로 요청이 올 경우 파싱 처리 *필수
+app.use(eduTest); // 커스텀 미들웨어 전역 등록
 
 // 클라이언트가 지정된 경로에 HTTP METHOD 요청을
 // 보낼 때 실행되는 Router 이다.
@@ -23,6 +28,13 @@ app.delete("/api/hi", (request, response, next) => {
   response.status(200).send("DELETE 익스프레스!");
 });
 
+// JSON 요청 제어
+app.post("/api/posts", (request, response, next) => {
+  const { account, password, name } = request.body;
+  console.log(account, password, name);
+  response.data(200).send({ account, password, name });
+});
+
 // ----------------
 // Query Parameter 제어
 // 모든 값을 string으로 받기 때문에 주의 필요
@@ -42,6 +54,11 @@ app.get("api/posts/:id", (request, response, next) => {
   response.status(200).send(postId);
 });
 
+// -------------
+// 라우트 그룹
+// -------------
+app.use("/api", authRouter);
+app.use("/api", usersRouter);
 // 대체 라우트 (모든 router중 가장 마지막에 작성)
 // app.use((request, response, next) => {
 //   response.status(404).send("404 (에러) 익스프레스!");
