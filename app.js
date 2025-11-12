@@ -2,6 +2,7 @@ import express from "express"; // express 모듈 가져오기
 import authRouter from "./routes/auth.router.js";
 import usersRouter from "./routes/users.router.js";
 import { eduTest } from "./app/middlewares/edu/edu.middleware.js";
+import { errorHandler } from "./app/middlewares/errors/error-handler.js";
 
 const app = express(); // express {} 반환
 app.use(express.json()); // JSON으로 요청이 올 경우 파싱 처리 *필수
@@ -54,6 +55,13 @@ app.get("api/posts/:id", (request, response, next) => {
   response.status(200).send(postId);
 });
 
+// 에러 테스트용 라우트
+app.get("error", (request, response, next) => {
+  setTimeout(() => {
+    next(new Error("throw로 고의 에러 발생"));
+  }, 1000);
+});
+
 // -------------
 // 라우트 그룹
 // -------------
@@ -71,6 +79,11 @@ app.use((request, response, next) => {
     msg: "찾을 수 없는 정보입니다.",
   });
 });
+
+// -----------------
+// error handler 등록
+// -----------------
+app.use(errorHandler);
 
 // 서버를 주어진 포트에서 시작
 app.listen(3000, () => {
