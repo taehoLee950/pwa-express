@@ -35,7 +35,7 @@ const attributes = {
       return dayjs(val).format("YYYY-MM-DD");
     },
   },
-  gerder: {
+  gender: {
     field: "gender",
     type: DataTypes.CHAR(1),
     allowNull: false,

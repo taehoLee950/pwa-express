@@ -3,6 +3,7 @@ import authRouter from "./routes/auth.router.js";
 import usersRouter from "./routes/users.router.js";
 import { eduTest } from "./app/middlewares/edu/edu.middleware.js";
 import { errorHandler } from "./app/middlewares/errors/error-handler.js";
+import eduRouter from "./routes/edu.router.js";
 
 const app = express(); // express {} 반환
 app.use(express.json()); // JSON으로 요청이 올 경우 파싱 처리 *필수
@@ -65,8 +66,11 @@ app.get("error", (request, response, next) => {
 // -------------
 // 라우트 그룹
 // -------------
+// 라우트를 모듈로 나눠 그룹핑 관리
 app.use("/api", authRouter);
 app.use("/api", usersRouter);
+app.use(eduRouter);
+
 // 대체 라우트 (모든 router중 가장 마지막에 작성)
 // app.use((request, response, next) => {
 //   response.status(404).send("404 (에러) 익스프레스!");

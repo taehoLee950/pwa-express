@@ -5,7 +5,7 @@ import Employee from "./Employee.js";
 const db = {}; // 생성할 db 인스턴스 저장용
 
 // 시퀄라이즈 객체 인스턴스 생성
-const sequlize = new Sequelize(
+const sequelize = new Sequelize(
   // DB 접속에 필요한 기본 정보 입력
   process.env.DB_MYSQL_DB_NAME, // 접속할 DB 명
   process.env.DB_MYSQL_USER, // DB 접속 유저
@@ -29,10 +29,10 @@ const sequlize = new Sequelize(
   }
 );
 
-db.sequlize = sequlize; // 생성한 sequelize 인스턴스를 db에 저장
+db.sequelize = sequelize; // 생성한 sequelize 인스턴스를 db에 저장
 
 // Employee.js 모델 초기화
-db.Employee = Employee.init(sequlize);
+db.Employee = Employee.init(sequelize);
 
 // 모델 관계 설정
 
