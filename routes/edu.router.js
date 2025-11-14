@@ -3,7 +3,7 @@ import db from "../app/models/index.js";
 import { Op } from "sequelize"; // Sequelize 연산자 사용
 import dayjs from "dayjs"; // 날짜 처리
 
-const { sequelize, Employee } = db;
+const { sequelize, Employee, TitleEmp, Title } = db;
 // sequelize : DB 연결 객체
 // Employee : 모델 객체, CRUD 및 쿼리 사용
 
@@ -130,18 +130,53 @@ eduRouter.get("/api/edu", async (request, response, next) => {
     //   offset: 10,
     // });
 
-    // group by + having
-    result = await Employee.findAll({
-      attributes: [
-        "gender",
-        [sequelize.fn("COUNT", sequelize.col("*")), "cnt_gender"],
+    // // group by + having
+    // result = await Employee.findAll({
+    //   attributes: [
+    //     "gender",
+    //     [sequelize.fn("COUNT", sequelize.col("*")), "cnt_gender"],
+    //   ],
+    //   group: ["gender"],
+    //   having: sequelize.literal("cnt_gender >= 40000"),
+    // });
+
+    // return response.status(200).send({
+    //   msg: "신규 직원 생성",
+    //   data: result,
+    // });
+
+    // join;
+    result = await Employee.findOne({
+      attributes: ["empId", "name"],
+      where: {
+        empId: 1,
+      },
+      include: [
+        {
+          model: TitleEmp, // 내가 연결할 모델
+          as: "titleEmp", // 내가 사용할 관계 (associate)
+          required: true, // true: inner join, flase: left outer join
+          attributes: ["titleCode"],
+          where: {
+            // 조건문
+            endAt: {
+              [Op.is]: null,
+            },
+          },
+          include: [
+            {
+              model: Title,
+              as: "titleEmp-child-of-title",
+              require: true,
+              attributes: ["title"],
+            },
+          ],
+        },
       ],
-      group: ["gender"],
-      having: sequelize.literal("cnt_gender >= 40000"),
     });
 
     return response.status(200).send({
-      msg: "신규 직원 생성",
+      msg: "정상 처리",
       data: result,
     });
   } catch (error) {

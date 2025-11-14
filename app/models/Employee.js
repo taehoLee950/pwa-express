@@ -159,6 +159,15 @@ const Employee = {
 
     return defineEmployee;
   },
+  // 모델 관계를 정의
+  associate: (db) => {
+    // 1:n 관계 (1명의 사원은 복수의 직급 정보를 가질수있다.)
+    db.Employee.hasMany(db.TitleEmp, {
+      sourceKey: "empId",
+      foreignKey: "empId",
+      as: "titleEmp",
+    });
+  },
 };
 
 export default Employee;
